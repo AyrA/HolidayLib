@@ -247,6 +247,12 @@ These are advanced commands that go further than basic RPN.
 - `RCL:x`: Recalls a value from memory onto the top of the stack. The memory will persist.
 - `DEL:x`: Deletes a storage slot. Not necessary, you can just overwrite with another STO. Memory is cleared automatically at the end.
 
+## Numbers
+
+The calculator will treat anything that passes `double.TryParse` as number and push it onto the stack.
+This means you can specify powers of 10 using the `e` style of number,
+for example, `6.9e6` or `4.20e-12`
+
 ## Example: Easter
 
 Easter is one of those holidays that follows a formula. The formula is given below.
