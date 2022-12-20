@@ -9,6 +9,11 @@ namespace HolidayLib
     [Serializable]
     public class UniqueHoliday : Holiday
     {
+        /// <summary>
+        /// Hashcode offset
+        /// </summary>
+        private const int HashcodeOffset = 0x14BAC30F;
+
         private DateTime date;
 
         /// <summary>
@@ -62,7 +67,8 @@ namespace HolidayLib
 
         public override int GetHashCode()
         {
-            return GetBaseHashCode()
+            return HashcodeOffset
+                ^ GetBaseHashCode()
                 ^ Date.GetHashCode();
         }
     }

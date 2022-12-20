@@ -33,7 +33,7 @@ namespace HolidayLib
 
         public override int GetHashCode()
         {
-            return GetBaseHashCode() ^ HashcodeOffset;
+            return HashcodeOffset ^ GetBaseHashCode();
         }
 
     }

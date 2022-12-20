@@ -13,6 +13,11 @@ namespace HolidayLib
     public class ConstantWeekdayHoliday : Holiday
     {
         /// <summary>
+        /// Hashcode offset
+        /// </summary>
+        private const int HashcodeOffset = 0x08E1FC8C;
+
+        /// <summary>
         /// Gets or sets the weekday to base the calculation on
         /// </summary>
         public DayOfWeek Weekday { get; set; }
@@ -89,7 +94,8 @@ namespace HolidayLib
 
         public override int GetHashCode()
         {
-            return GetBaseHashCode()
+            return HashcodeOffset
+                ^ GetBaseHashCode()
                 ^ Weekday.GetHashCode()
                 ^ Month.GetHashCode()
                 ^ WeekdayIndex.GetHashCode()

@@ -7,6 +7,11 @@ namespace HolidayLib
     public class OffsetHoliday : Holiday
     {
         /// <summary>
+        /// Hashcode offset
+        /// </summary>
+        private const int HashcodeOffset = 0x304D075F;
+
+        /// <summary>
         /// The default recursion limit of <see cref="OffsetHoliday"/> types
         /// </summary>
         public static readonly int DefaultRecursionLimit = 10;
@@ -70,6 +75,15 @@ namespace HolidayLib
 
         public override bool Equals(object o)
         {
+            return EqualsInternal(o, 1);
+        }
+
+        private bool EqualsInternal(object o, int level)
+        {
+            if (level > RecursionLimit)
+            {
+                throw new Exception($"Operation aborted. Too many {nameof(OffsetHoliday)} types referenced");
+            }
             if (o is null)
             {
                 return false;
@@ -82,14 +96,42 @@ namespace HolidayLib
             {
                 return false;
             }
-            return OffsetDays == h.OffsetDays && BaseHoliday.Equals(h.BaseHoliday);
+            if (OffsetDays != h.OffsetDays)
+            {
+                return false;
+            }
+            //Special handling to prevent recursion
+            if (h.BaseHoliday is OffsetHoliday refOh && BaseHoliday is OffsetHoliday selfOh)
+            {
+                return refOh.EqualsInternal(selfOh, level + 1);
+            }
+            return BaseHoliday.Equals(h.BaseHoliday);
         }
 
         public override int GetHashCode()
         {
-            return GetBaseHashCode()
+            return GetHashCodeInternal(1);
+        }
+
+        private int GetHashCodeInternal(int level)
+        {
+            if (level > RecursionLimit)
+            {
+                throw new Exception($"Operation aborted. Too many {nameof(OffsetHoliday)} types referenced");
+            }
+            int baseHashCode;
+            if (BaseHoliday is OffsetHoliday oh)
+            {
+                baseHashCode = oh.GetHashCodeInternal(level + 1);
+            }
+            else
+            {
+                baseHashCode = BaseHoliday.GetHashCode();
+            }
+            return HashcodeOffset
+                ^ GetBaseHashCode()
                 ^ OffsetDays.GetHashCode()
-                ^ BaseHoliday.GetHashCode();
+                ^ baseHashCode;
         }
     }
 }

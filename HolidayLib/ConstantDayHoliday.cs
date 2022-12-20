@@ -10,6 +10,11 @@ namespace HolidayLib
     public class ConstantDayHoliday : Holiday
     {
         /// <summary>
+        /// Hashcode offset
+        /// </summary>
+        private const int HashcodeOffset = 0x26E2A76E;
+
+        /// <summary>
         /// Gets or sets the day of month
         /// </summary>
         public int DayOfMonth { get; set; }
@@ -43,7 +48,7 @@ namespace HolidayLib
 
         public override int GetHashCode()
         {
-            return GetBaseHashCode() ^ DayOfMonth.GetHashCode() ^ Month.GetHashCode();
+            return HashcodeOffset ^ GetBaseHashCode() ^ DayOfMonth.GetHashCode() ^ Month.GetHashCode();
         }
     }
 }

@@ -11,6 +11,11 @@ namespace HolidayLib
     public class ComputedHoliday : Holiday
     {
         /// <summary>
+        /// Hashcode offset
+        /// </summary>
+        private const int HashcodeOffset = 0x3FE95DBA;
+
+        /// <summary>
         /// Computation routine of the holiday in RPN.
         /// This routine should return the date in a single number as "ddmm".
         /// A leading zero is optional for days 1-9
@@ -68,7 +73,7 @@ namespace HolidayLib
 
         public override int GetHashCode()
         {
-            return GetBaseHashCode() ^ Computation.GetHashCode();
+            return HashcodeOffset ^ GetBaseHashCode() ^ Computation.GetHashCode();
         }
     }
 }
