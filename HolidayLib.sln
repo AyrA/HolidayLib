@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33122.133
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HolidayLib", "HolidayLib\HolidayLib.csproj", "{94F1393E-4D4C-4DB5-A99D-27776F121919}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestTool", "TestTool\TestTool.csproj", "{02956290-33BD-4DDC-A593-0A01C1C03113}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{94F1393E-4D4C-4DB5-A99D-27776F121919}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94F1393E-4D4C-4DB5-A99D-27776F121919}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94F1393E-4D4C-4DB5-A99D-27776F121919}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94F1393E-4D4C-4DB5-A99D-27776F121919}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02956290-33BD-4DDC-A593-0A01C1C03113}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02956290-33BD-4DDC-A593-0A01C1C03113}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02956290-33BD-4DDC-A593-0A01C1C03113}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02956290-33BD-4DDC-A593-0A01C1C03113}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EDE99D05-30D9-4322-AA7F-1D50346E89F1}
+	EndGlobalSection
+EndGlobal
