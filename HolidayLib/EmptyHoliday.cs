@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace HolidayLib
 {
@@ -21,6 +22,7 @@ namespace HolidayLib
         /// <param name="year">Ignored</param>
         /// <returns>Never</returns>
         /// <exception cref="InvalidOperationException">Attempted to use <see cref="Compute(int)"/></exception>
+        [DoesNotReturn]
         public override DateTime Compute(int year)
         {
             throw new InvalidOperationException($"{nameof(EmptyHoliday)} instances cannot be computed");

@@ -52,6 +52,7 @@ namespace HolidayLib
 
         public override DateTime Compute(int year)
         {
+            EnsureValidYear(year);
             if (BaseHoliday is EmptyHoliday)
             {
                 throw new InvalidOperationException($"{nameof(BaseHoliday)} has not been assigned a proper holiday yet");

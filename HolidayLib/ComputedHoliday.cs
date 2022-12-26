@@ -35,6 +35,7 @@ namespace HolidayLib
 
         public override DateTime Compute(int year)
         {
+            EnsureValidYear(year);
             var ddmm = Helpers.RPN(Computation, year);
             var dd = (int)Math.Floor(ddmm / 100);
             var mm = (int)ddmm % 100;

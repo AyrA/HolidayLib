@@ -1,10 +1,14 @@
 # HolidayLib
 
-This is a library for storing holidays in a manner that allows automated computations
+This is a library for storing holidays in a manner that allows automated computations.
+
+The repository comes with a crude command line application to create and edit serialized holiday data.
 
 # Types
 
-Different types of various complexity are supported.
+Different types of various complexity are included.
+Custom types can be derived from `Holiday`
+
 They all support XML serialization out of the box.
 
 ## Holiday
@@ -29,6 +33,16 @@ It's the programmers responsibility to properly use `StartTime` and `Duration`,
 the caluclation routine will always just return the date.
 
 ### Functions
+
+#### EnsureValidYear(int)
+
+- Availability: Derived types only
+- Implementation: Given in base type
+
+Throws an exception if `year` is outside of `ActiveFromYear` and `ActiveToYear`.
+All types included in HolidayLib call this in the `Compute(int)` routine.
+
+Custom derived types should behave in the same way.
 
 #### CompareBaseValues(Holiday)
 
@@ -155,6 +169,9 @@ Note: The calculation will start with the year supplied by the `Compute()` call 
 
 This holiday type is appropriate for holidays so complex they need to be manually calculated and hardcoded,
 or for a holiday that happens only once.
+
+Trying to set `ActiveFromYear` or `ActiveToYear` in this type will throw an Exception
+if the value doesn't matches the year of the date value of the instance.
 
 ### Properties
 

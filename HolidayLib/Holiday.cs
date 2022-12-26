@@ -67,6 +67,23 @@ namespace HolidayLib
         public TimeSpan Duration { get; set; } = TimeSpan.FromDays(1);
 
         /// <summary>
+        /// Derived types should call this in <see cref="Compute"/> to validate the year argument
+        /// </summary>
+        /// <param name="year">Year</param>
+        /// <exception cref="InvalidOperationException">Year outside of bounds</exception>
+        protected void EnsureValidYear(int year)
+        {
+            if (ActiveFromYear.HasValue && ActiveFromYear.Value > year)
+            {
+                throw new InvalidOperationException($"Cannot calculate holiday because {year}<{ActiveFromYear}");
+            }
+            if (ActiveToYear.HasValue && ActiveToYear.Value < year)
+            {
+                throw new InvalidOperationException($"Cannot calculate holiday because {year}>{ActiveToYear}");
+            }
+        }
+
+        /// <summary>
         /// Compares the base properties of two holiday instances
         /// </summary>
         /// <param name="h">Holiday instance</param>

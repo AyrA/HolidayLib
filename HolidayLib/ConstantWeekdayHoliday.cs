@@ -44,6 +44,7 @@ namespace HolidayLib
 
         public override DateTime Compute(int year)
         {
+            EnsureValidYear(year);
             if (WeekdayIndex == 0)
             {
                 throw new InvalidOperationException(nameof(WeekdayIndex) + " has not been set");

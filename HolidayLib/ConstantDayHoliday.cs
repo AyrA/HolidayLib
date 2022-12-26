@@ -25,6 +25,7 @@ namespace HolidayLib
 
         public override DateTime Compute(int year)
         {
+            EnsureValidYear(year);
             return new DateTime(year, Month, DayOfMonth);
         }
 

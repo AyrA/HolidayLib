@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace HolidayLib
 {
@@ -10,6 +11,44 @@ namespace HolidayLib
     public class UniqueHoliday : Holiday
     {
         /// <summary>
+        /// Gets the year of <see cref="Date"/>
+        /// or throws if attempting to set this value to 
+        /// anything other than the year of <see cref="Date"/>
+        /// </summary>
+        [NotNull]
+        public new int? ActiveFromYear
+        {
+            get => date.Year;
+            set
+            {
+                if (value.HasValue && value == date.Year)
+                {
+                    return;
+                }
+                throw new InvalidOperationException($"{nameof(ActiveFromYear)} cannot be set to anything other than {date.Year} in this {nameof(UniqueHoliday)} instance");
+            }
+        }
+
+        /// <summary>
+        /// Gets the year of <see cref="Date"/>
+        /// or throws if attempting to set this value to
+        /// anything other than the year of <see cref="Date"/>
+        /// </summary>
+        [NotNull]
+        public new int? ActiveToYear
+        {
+            get => date.Year;
+            set
+            {
+                if (value.HasValue && value == date.Year)
+                {
+                    return;
+                }
+                throw new InvalidOperationException($"{nameof(ActiveToYear)} cannot be set to anything other than {date.Year} in this {nameof(UniqueHoliday)} instance");
+            }
+        }
+
+        /// <summary>
         /// Hashcode offset
         /// </summary>
         private const int HashcodeOffset = 0x14BAC30F;
@@ -20,8 +59,10 @@ namespace HolidayLib
         /// Gets or sets the date
         /// </summary>
         /// <remarks>
-        /// Also sets the <see cref="Holiday.ActiveFromYear"/>
-        /// and <see cref="Holiday.ActiveToYear"/> properties appropriately
+        /// Also sets the <see cref="ActiveFromYear"/>
+        /// and <see cref="ActiveToYear"/> properties appropriately.
+        /// The time component of the supplied date is cut off.
+        /// <see cref="DateTime.Kind"/> information is retained.
         /// </remarks>
         public DateTime Date
         {
@@ -31,14 +72,15 @@ namespace HolidayLib
             }
             set
             {
-                date = value;
-                ActiveFromYear = value.Year;
-                ActiveToYear = value.Year;
+                date = value.Date;
+                base.ActiveFromYear = ActiveFromYear = value.Year;
+                base.ActiveToYear = ActiveToYear = value.Year;
             }
         }
 
         public override DateTime Compute(int year)
         {
+            EnsureValidYear(year);
             var dt = Date.Date;
             if (year != dt.Year)
             {
