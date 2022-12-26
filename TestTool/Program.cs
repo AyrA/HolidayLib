@@ -297,9 +297,16 @@ namespace TestTool
             {
                 Console.WriteLine("No holidays in this month");
             }
-            foreach (var h in hInMonth)
+            else
             {
-                Console.WriteLine("{0:yyyy-MM-dd}: {1}", h.Compute(y), h.Name);
+                var days = new List<int>();
+                foreach (var h in hInMonth)
+                {
+                    var date = h.Compute(y);
+                    days.Add(date.Day);
+                    Console.WriteLine("{0:yyyy-MM-dd}: {1}", date, h.Name);
+                }
+                PrintCalendar(y, m, days.ToArray());
             }
         }
 
@@ -389,6 +396,77 @@ namespace TestTool
             Console.SetCursorPosition(fromX, fromY);
             Console.Write(string.Empty.PadRight(charCount));
             Console.SetCursorPosition(pos.X, pos.Y);
+        }
+
+        private static void PrintCalendar(int year, int month, params int[] highlight)
+        {
+            //Get list with days of month
+            var days = Enumerable
+                .Range(1, DateTime.DaysInMonth(year, month))
+                .Select(m => m.ToString()).ToList();
+
+            var dt = new DateTime(year, month, 1);
+            var weekday = dt.DayOfWeek;
+            //Insert blank spaces to account for months not starting on a monday
+            while (weekday != DayOfWeek.Monday)
+            {
+                days.Insert(0, "");
+                weekday = (DayOfWeek)((int)(weekday - 1) % 7);
+                highlight = highlight.Select(m => m + 1).ToArray();
+            }
+            while (days.Count % 7 > 0)
+            {
+                days.Add("");
+            }
+
+            //Calendar header
+            Console.WriteLine(@"
+╔════╤════╤════╤════╤════╤════╤════╗
+║ Mo │ Tu │ We │ Th │ Fr │ Sa │ Su ║
+╠════╪════╪════╪════╪════╪════╪════╣");
+
+            int i = 0; //We also need this later
+            for (; i < days.Count - 7; i += 7)
+            {
+                Console.Write("║");
+                for (var j = 0; j < 7; j++)
+                {
+                    //Sunday
+                    if (j == 6)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                    }
+                    if (highlight.Contains(j + i + 1))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                    }
+                    Console.Write(" {0,2} ", days[i + j]);
+                    Console.ResetColor();
+                    Console.Write("{0}", j == 6 ? "" : "│");
+                }
+                Console.WriteLine("║");
+                Console.WriteLine("╟────┼────┼────┼────┼────┼────┼────╢");
+            }
+
+            //Last calendar row
+            Console.Write("║");
+            for (var j = 0; j < 7; j++)
+            {
+                //Sunday
+                if (j == 6)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                }
+                if (highlight.Contains(j + i + 1))
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                Console.Write(" {0,2} ", days[i + j]);
+                Console.ResetColor();
+                Console.Write("{0}", j == 6 ? "" : "│");
+            }
+            Console.WriteLine("║");
+            Console.WriteLine("╙────┴────┴────┴────┴────┴────┴────╜");
         }
     }
 }
