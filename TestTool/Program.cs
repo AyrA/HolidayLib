@@ -23,6 +23,9 @@ namespace TestTool
             Menu();
         }
 
+        /// <summary>
+        /// Main menu
+        /// </summary>
         static void Menu()
         {
             while (true)
@@ -57,6 +60,9 @@ namespace TestTool
             }
         }
 
+        /// <summary>
+        /// Lists all holidays
+        /// </summary>
         private static void HolidayList()
         {
             while (true)
@@ -127,6 +133,9 @@ namespace TestTool
             }
         }
 
+        /// <summary>
+        /// Adds a new holiday
+        /// </summary>
         private static void HolidayAdd()
         {
             // https://de.wikipedia.org/wiki/Spencers_Osterformel
@@ -269,6 +278,9 @@ namespace TestTool
             Console.WriteLine("Holiday added");
         }
 
+        /// <summary>
+        /// Shows a calendar view of a given year and month
+        /// </summary>
         private static void CalendarShow()
         {
             Console.Clear();
@@ -310,11 +322,19 @@ namespace TestTool
             }
         }
 
+        /// <summary>
+        /// Saves holiday list to file
+        /// </summary>
         private static void SaveList()
         {
             File.WriteAllText(holidayFilePath, Tools.Serialize(holidays));
         }
 
+        /// <summary>
+        /// Reads a line from the console
+        /// </summary>
+        /// <param name="query">Prompt to show</param>
+        /// <returns>Read line</returns>
         private static string ReadLine(string? query = null)
         {
             if (query != null)
@@ -324,6 +344,11 @@ namespace TestTool
             return Console.ReadLine() ?? throw new Exception("Abort");
         }
 
+        /// <summary>
+        /// Reads a number from the console
+        /// </summary>
+        /// <param name="query">Prompt to show</param>
+        /// <returns>Read number</returns>
         private static int ReadNumber(string? query = null)
         {
             var pos = new
@@ -347,6 +372,11 @@ namespace TestTool
             }
         }
 
+        /// <summary>
+        /// Reads a single key from console
+        /// </summary>
+        /// <param name="chars">List of accepted keys</param>
+        /// <returns>Pressed key char</returns>
         private static char ReadKey(string chars)
         {
             chars = chars.ToUpper();
@@ -361,6 +391,9 @@ namespace TestTool
             }
         }
 
+        /// <summary>
+        /// Flushes keyboard buffer and waits for any key press
+        /// </summary>
         private static void WaitForKey()
         {
             //Clear buffer
@@ -371,8 +404,21 @@ namespace TestTool
             Console.ReadKey();
         }
 
+        /// <summary>
+        /// Clears a text region of the console between the given parameters and the cursor
+        /// </summary>
+        /// <param name="fromX">X position</param>
+        /// <param name="fromY">Y position</param>
         private static void ClearRegion(int fromX, int fromY) => ClearRegion(fromX, fromY, Console.CursorLeft, Console.CursorTop);
 
+        /// <summary>
+        /// Clears a text region between two coordinates
+        /// </summary>
+        /// <param name="fromX">X position 1</param>
+        /// <param name="fromY">Y position 1</param>
+        /// <param name="toX">X position 2</param>
+        /// <param name="toY">Y position 2</param>
+        /// <exception cref="ArgumentException"></exception>
         private static void ClearRegion(int fromX, int fromY, int toX, int toY)
         {
             if (fromY > toY)
@@ -398,6 +444,12 @@ namespace TestTool
             Console.SetCursorPosition(pos.X, pos.Y);
         }
 
+        /// <summary>
+        /// Prints a graphical calendar of a month
+        /// </summary>
+        /// <param name="year">Year</param>
+        /// <param name="month">Month</param>
+        /// <param name="highlight">Highlighted days</param>
         private static void PrintCalendar(int year, int month, params int[] highlight)
         {
             //Get list with days of month
