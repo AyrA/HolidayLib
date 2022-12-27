@@ -9,7 +9,7 @@ The repository comes with a crude command line application to create and edit se
 Different types of various complexity are included.
 Custom types can be derived from `Holiday`
 
-They all support XML serialization out of the box.
+They all support XML serialization out of the box as well as a custom byte serializer.
 
 ## Holiday
 
@@ -28,11 +28,76 @@ and defines functions that derived types must implement.
 - **StartTime**: Usually midnight, but can be set for holidays that do not start with the day
 - **Duration**: Usually one day, but can be set for holidays that do not end after one day
 
-Note that the properties are not actually used by the derived types.
 It's the programmers responsibility to properly use `StartTime` and `Duration`,
 the caluclation routine will always just return the date.
 
+`ActiveFromYear` and `ActiveToYear` are respected when calling Compute on internal types.
+User defined holiday types are advised to show the same behavior.
+The base Holiday type has a method to quickly check the supplied year
+with the values from these two properties (see `EnsureValidYear(int)` further below).
+
 ### Functions
+
+#### SerializeBaseValues<T>
+
+- Availability: Derived types only
+- Implementation: Given in base type
+
+Serializes the values from the base Holiday instance into a byte array.
+This also includes the type name of the supplied type argument `T`
+
+Derived types should call this before serializing their own values.
+
+#### DeserializeBaseValues<T>(Stream)
+
+- Availability: Derived types only
+- Implementation: Given in base type
+
+Deserializes base holiday values previously serialized with a call to `SerializeBaseValues`.
+This also ensures that the type argument `T` matches the deserialized type.
+
+Derived types should call this before deserializing their own values.
+
+#### Serialize()
+
+- Availability: Derived types only
+- Implementation: Required in derived type
+
+Serializes a Holiday instance into a byte array.
+This can later be deserialized with `Deserialize(byte[])`
+
+Note: Serialization should be done in a way
+so that deserialization doesn't depends on the exact length of the byte array to match.
+This means data has to be serialized in a way
+that permits excessive data being present after all serialized fields.
+
+#### Deserialize(byte[])
+
+- Availability: Derived types only
+- Implementation: Required in derived type
+
+Deserializes an instance previously serialized with a call to `Serialize()`
+
+Note: Deserialization should be able to handle byte arguments
+that are larger than necessary and contain more data after all fields are deserialized.
+
+#### Deserialize<T>(byte[])
+
+- Availability: Public
+- Implementation: Static method in `Holiday`
+
+This is the static version of `Deserialize(byte[])`
+and permits easy instantiation of serialized holiday types if the type `T` is known.
+
+#### DeserializeGenericHoliday(byte[])
+
+- Availability: Public
+- Implementation: Static method in `Holiday`
+
+This is a dynamic version of the static `Deserialize<T>(byte[])` method.
+It permits deserialization of any Holiday derived type wihout knowing the type in advance.
+
+The returned value will be of the exact same type as was serialized.
 
 #### EnsureValidYear(int)
 
