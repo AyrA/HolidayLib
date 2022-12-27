@@ -452,18 +452,27 @@ namespace TestTool
         /// <param name="highlight">Highlighted days</param>
         private static void PrintCalendar(int year, int month, params int[] highlight)
         {
+            //The width of text in the calendar frame
+            const int calTextWidth = 34;
+            //English month names in order they appear
+            const string monthNames = ",January,February,March,April,May,June,July,Auguse,September,October,November,December";
+            var dt = new DateTime(year, month, 1);
+            var weekday = dt.DayOfWeek;
+            var monthName = monthNames.Split(',')[month] + $" {year}";
+
             //Get list with days of month
             var days = Enumerable
                 .Range(1, DateTime.DaysInMonth(year, month))
                 .Select(m => m.ToString()).ToList();
 
-            var dt = new DateTime(year, month, 1);
-            var weekday = dt.DayOfWeek;
             //Insert blank spaces to account for months not starting on a monday
             while (weekday != DayOfWeek.Monday)
             {
                 days.Insert(0, "");
-                weekday = (DayOfWeek)((int)(weekday - 1) % 7);
+                if (--weekday < 0)
+                {
+                    weekday = DayOfWeek.Saturday;
+                }
                 highlight = highlight.Select(m => m + 1).ToArray();
             }
             while (days.Count % 7 > 0)
@@ -473,9 +482,11 @@ namespace TestTool
 
             //Calendar header
             Console.WriteLine(@"
-╔════╤════╤════╤════╤════╤════╤════╗
+╔══════════════════════════════════╗
+║{0}║
+╠════╤════╤════╤════╤════╤════╤════╣
 ║ Mo │ Tu │ We │ Th │ Fr │ Sa │ Su ║
-╠════╪════╪════╪════╪════╪════╪════╣");
+╠════╪════╪════╪════╪════╪════╪════╣", monthName.PadLeft(calTextWidth / 2 + monthName.Length / 2).PadRight(calTextWidth));
 
             int i = 0; //We also need this later
             for (; i < days.Count - 7; i += 7)
