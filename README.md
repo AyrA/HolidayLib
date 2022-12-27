@@ -4,6 +4,8 @@ This is a library for storing holidays in a manner that allows automated computa
 
 The repository comes with a crude command line application to create and edit serialized holiday data.
 
+*This document uses {T} to denote type parameters because angle brackets have special meaning in HTML*
+
 # Types
 
 Different types of various complexity are included.
@@ -43,7 +45,7 @@ See `UniqueHoliday` for an example where `ActiveFromYear` and `ActiveToYear` are
 
 ### Functions
 
-#### SerializeBaseValues<T>
+#### SerializeBaseValues{T}
 
 - Availability: Derived types only
 - Implementation: Given in base type
@@ -53,7 +55,7 @@ This also includes the type name of the supplied type argument `T`
 
 Derived types should call this before serializing their own values.
 
-#### DeserializeBaseValues<T>(Stream)
+#### DeserializeBaseValues{T}(Stream)
 
 - Availability: Derived types only
 - Implementation: Given in base type
@@ -86,7 +88,7 @@ Deserializes an instance previously serialized with a call to `Serialize()`
 Note: Deserialization should be able to handle byte arguments
 that are larger than necessary and contain more data after all fields are deserialized.
 
-#### Deserialize<T>(byte[])
+#### Deserialize{T}(byte[])
 
 - Availability: Public
 - Implementation: Static method in `Holiday`
@@ -99,7 +101,7 @@ and permits easy instantiation of serialized holiday types if the type `T` is kn
 - Availability: Public
 - Implementation: Static method in `Holiday`
 
-This is a dynamic version of the static `Deserialize<T>(byte[])` method.
+This is a dynamic version of the static `Deserialize{T}(byte[])` method.
 It permits deserialization of any Holiday derived type wihout knowing the type in advance.
 
 The returned value will be of the exact same type as was serialized.
