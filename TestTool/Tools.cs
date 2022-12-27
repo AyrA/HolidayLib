@@ -6,7 +6,7 @@ namespace TestTool
 {
     public static class Tools
     {
-        public static string Serialize(this object obj)
+        public static string SerializeXml(this object obj)
         {
             if (obj == null)
             {
@@ -19,7 +19,7 @@ namespace TestTool
             return Encoding.UTF8.GetString(MS.ToArray());
         }
 
-        public static T Deserialize<T>(this string s)
+        public static T DeserializeXml<T>(this string s)
         {
             if (string.IsNullOrWhiteSpace(s))
             {

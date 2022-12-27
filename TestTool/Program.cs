@@ -18,7 +18,7 @@ namespace TestTool
         {
             if (File.Exists(holidayFilePath))
             {
-                holidays.AddRange(Tools.Deserialize<Holiday[]>(File.ReadAllText(holidayFilePath)));
+                holidays.AddRange(File.ReadAllText(holidayFilePath).DeserializeXml<Holiday[]>());
             }
             Menu();
         }
@@ -327,7 +327,7 @@ namespace TestTool
         /// </summary>
         private static void SaveList()
         {
-            File.WriteAllText(holidayFilePath, Tools.Serialize(holidays));
+            File.WriteAllText(holidayFilePath, Tools.SerializeXml(holidays));
         }
 
         /// <summary>
