@@ -54,21 +54,43 @@ namespace HolidayLib
         }
 
         /// <summary>
-        /// Ensures that the nesting of <see cref="BaseHoliday"/> does not exceed <see cref="RecursionLimit"/>
+        /// Calls <see cref="EnsureRecursionLimit(OffsetHoliday, int)"/> with <see cref="RecursionLimit"/>
         /// </summary>
-        /// <exception cref="Exception">Too many nested <see cref="BaseHoliday"/> values</exception>
-        private void EnsureRecursionLimit()
+        /// <param name="instance"><see cref="OffsetHoliday"/> instance</param>
+        public static void EnsureRecursionLimit(OffsetHoliday instance) => EnsureRecursionLimit(instance, RecursionLimit);
+
+        /// <summary>
+        /// Ensures the supplied instance doesn't exceeds the permitted recursion limit
+        /// </summary>
+        /// <param name="instance"><see cref="OffsetHoliday"/> instance</param>
+        /// <param name="limit">Recursion limit. Must be at least 1</param>
+        /// <exception cref="ArgumentOutOfRangeException">Invalid value for <paramref name="limit"/></exception>
+        /// <exception cref="Exception">Recursion depth higher than <paramref name="limit"/> allows</exception>
+        public static void EnsureRecursionLimit(OffsetHoliday instance, int limit)
         {
+            if (limit <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(limit), "Limit too low. Checking recursion limit not possible");
+            }
             int count = 0;
-            var h = this;
+            var h = instance;
             while (h != null)
             {
-                if (++count > RecursionLimit)
+                if (++count > limit)
                 {
                     throw new Exception($"Operation aborted. Too many {nameof(OffsetHoliday)} types referenced");
                 }
                 h = h.BaseHoliday as OffsetHoliday;
             }
+        }
+
+        /// <summary>
+        /// Ensures that the nesting of <see cref="BaseHoliday"/> does not exceed <see cref="RecursionLimit"/>
+        /// </summary>
+        /// <exception cref="Exception">Too many nested <see cref="BaseHoliday"/> values</exception>
+        private void EnsureRecursionLimit()
+        {
+            EnsureRecursionLimit(this, RecursionLimit);
         }
 
         public override DateTime Compute(int year)

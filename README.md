@@ -220,16 +220,22 @@ This is a holiday that is offset a given number of days from a different holiday
 ### Properties
 
 - **BaseHoliday**: The holiday to base the offset on
-- **RecursionLimit**: Recursion limit (static value, default: 10)
+- **RecursionLimit**: Recursion limit (static value, default: `DefaultRecursionLimit`)
+
+Note: As of this writing, `RecursionLimit` is currently set to 10.
 
 ### About recursion
 
-The recursion limit limits how many holidays can be stacked,
+The recursion limit value limits how many holidays can be stacked,
 specifically, it prevents deep nestings of OffsetHoliday types, or even loops of them.
 You normally do not need to raise the limit.
 Raising the limit beyond reasonable values will eventually throw a `StackOverflowException` by the runtime.
 
-Note: The limit also applies to `GetHashCode` and `Equals`
+Note: The limit applies to all functions that interact with `BaseHoliday` property, 
+including `GetHashCode`, `Equals`, and the (de)serialization methods.
+The limit is only checked when necessary and not directly when setting it.
+You can manually call the static `EnsureRecursionLimit(BaseHoliday,[int])` method
+to verify the conformity of an instance to the limit at any time.
 
 ## ComputedHoliday
 
