@@ -45,7 +45,7 @@ See `UniqueHoliday` for an example where `ActiveFromYear` and `ActiveToYear` are
 
 ### Functions
 
-#### SerializeBaseValues{T}
+#### SerializeBaseValues{T}()
 
 - Availability: Derived types only
 - Implementation: Given in base type
