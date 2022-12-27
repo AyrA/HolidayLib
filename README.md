@@ -123,7 +123,7 @@ Custom derived types should behave in the same way.
 
 Compares the base properties (see above) of two holiday types for equality.
 
-#### GetBaseHashCode
+#### GetBaseHashCode()
 
 - Availability: Derived types only
 - Implementation: Given in base type
@@ -167,7 +167,7 @@ in this case you want to use a single query with a year range instead of 100 ind
 This is an override of `object.Equals(object)` and you must provide an implementation to compare your derived types.
 Equality for a holiday means it's the same derived type and all public properties have the same value.
 
-#### GetHashCode
+#### GetHashCode()
 
 - Availability: Public
 - Implementation: Required in derived type
