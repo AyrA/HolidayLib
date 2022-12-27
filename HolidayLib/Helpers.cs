@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace HolidayLib
@@ -8,7 +10,7 @@ namespace HolidayLib
     /// <summary>
     /// Helper functions
     /// </summary>
-    public static class Helpers
+    internal static class Helpers
     {
         /// <summary>
         /// Checks if an enum type is defined
@@ -245,6 +247,112 @@ namespace HolidayLib
                 }
             }
             return doubles.Pop();
+        }
+
+        /// <summary>
+        /// Checks if the given values are valid RPN instructions,
+        /// and throws if not.
+        /// </summary>
+        /// <param name="instructions">RPN Instructions</param>
+        /// <exception cref="ArgumentException">Invalid RPN instruction</exception>
+        /// <remarks>
+        /// This doesn't checks if the instructions is valid
+        /// in the sense that it's possible to actually execute at the given time.
+        /// For example, this will not throw if the first instruction is "+"
+        /// even though the stack is empty at that point.
+        /// </remarks>
+        public static void EnsureValidRPN(string[] instructions)
+        {
+            var knownInstructions = "+ - * / \\ ** % NAN0 INFMAX FLOOR CEIL ROUND MOD DUP SWAP " +
+                "E PI > < <= >= = ~=".Split(' ');
+            foreach (var instruction in instructions.Select(m => m.Trim().ToUpper()))
+            {
+                //Number
+                if (double.TryParse(instruction, out double newValue))
+                {
+                    continue;
+                }
+                //Simple instructions
+                else if (knownInstructions.Contains(instruction))
+                {
+                    continue;
+                }
+                //Complex instructions in "COMMAND:OPERATOR" format
+                else
+                {
+                    var cmd = Regex.Match(instruction, @"^([^:]+):(.+)$");
+                    if (cmd.Success)
+                    {
+                        var command = cmd.Groups[1].Value;
+                        var argument = cmd.Groups[2].Value;
+
+                        switch (command)
+                        {
+                            //Store a value in memory (overwrites existing value if any)
+                            case "STO":
+                                if (argument.Length > 1)
+                                {
+                                    throw new ArgumentException($"Argument of `{instruction}` must be a single char only");
+                                }
+                                break;
+                            //Recall a value from memory
+                            case "RCL":
+                                if (argument.Length > 1)
+                                {
+                                    throw new ArgumentException($"Argument of `{instruction}` must be a single char only");
+                                }
+                                break;
+                            //Delete value from memory
+                            case "DEL":
+                                if (argument.Length > 1)
+                                {
+                                    throw new ArgumentException($"Argument of `{instruction}` must be a single char only");
+                                }
+                                break;
+                            default:
+                                throw new ArgumentException($"Command '{instruction}' is invalid");
+                        }
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"Instruction '{instruction}' is invalid");
+                    }
+                }
+
+            }
+        }
+
+        /// <summary>
+        /// Serializes a nullable integer
+        /// </summary>
+        /// <param name="BW">Binary writer</param>
+        /// <param name="i">number</param>
+        public static void SerializeNullable(BinaryWriter BW, int? i)
+        {
+            BW.Write((byte)(i == null ? 0 : 1));
+            if (i.HasValue)
+            {
+                BW.Write(i.Value);
+            }
+        }
+
+        /// <summary>
+        /// Deserializes a nullable item from data
+        /// </summary>
+        /// <param name="BR">Data reader</param>
+        /// <returns>Deserialized number</returns>
+        /// <exception cref="InvalidDataException">Invalid deserialized data</exception>
+        public static int? DeserializeNullableInt(BinaryReader BR)
+        {
+            switch (BR.ReadByte())
+            {
+                case 0:
+                    return null;
+                case 1:
+                    return BR.ReadInt32();
+                default:
+                    throw new InvalidDataException("Invalid serialized data. Expected value 0 or 1, but got something different.");
+            }
         }
     }
 }

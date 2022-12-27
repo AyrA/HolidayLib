@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using System.Net.WebSockets;
+using System.Text;
 
 namespace HolidayLib
 {
@@ -17,15 +20,30 @@ namespace HolidayLib
         /// </summary>
         private const int HashcodeOffset = 0x08E1FC8C;
 
+        private DayOfWeek weekday = DayOfWeek.Monday;
+        private int weekdayOffset = 0;
+        private int weekdayIndex = 1;
+        private int month = 1;
+
         /// <summary>
         /// Gets or sets the weekday to base the calculation on
         /// </summary>
-        public DayOfWeek Weekday { get; set; }
+        public DayOfWeek Weekday
+        {
+            get => weekday; set
+            {
+                if (!Helpers.IsDefined(value))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                }
+                weekday = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the days to offset from the calculated weekday
         /// </summary>
-        public int WeekdayOffset { get; set; }
+        public int WeekdayOffset { get => weekdayOffset; set => weekdayOffset = value; }
 
         /// <summary>
         /// Gets or sets which weekday of the month to use.
@@ -35,12 +53,32 @@ namespace HolidayLib
         /// If this is negative, it means the nth occurence of the weekday from the end of the month.
         /// Zero is not a permitted value.
         /// </remarks>
-        public int WeekdayIndex { get; set; }
+        public int WeekdayIndex
+        {
+            get => weekdayIndex; set
+            {
+                if (value == 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value), "Value cannot be zero");
+                }
+                weekdayIndex = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the month to base the calculation on
         /// </summary>
-        public int Month { get; set; }
+        public int Month
+        {
+            get => month; set
+            {
+                if (value < 1 || value > 12)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                }
+                month = value;
+            }
+        }
 
         public override DateTime Compute(int year)
         {
@@ -72,6 +110,48 @@ namespace HolidayLib
             return dt.AddDays(WeekdayOffset);
         }
 
+        public override void Deserialize(byte[] data)
+        {
+            using var MS = new MemoryStream(data, false);
+            DeserializeBaseValues<ConstantWeekdayHoliday>(MS);
+            using var BR = new BinaryReader(MS);
+            var dow = (DayOfWeek)BR.ReadByte();
+            var wOffset = BR.ReadInt32();
+            var wIndex = BR.ReadInt32();
+            var m = BR.ReadByte();
+            if (m < 1 || m > 12)
+            {
+                throw new InvalidDataException($"Month outside of permitted range. Value was '{m}'");
+            }
+            if (wIndex == 0)
+            {
+                throw new InvalidDataException($"Weekday index cannot be zero. Value was '{wIndex}'");
+            }
+            var prev = new
+            {
+                Weekday,
+                WeekdayOffset,
+                WeekdayIndex,
+                Month
+            };
+            try
+            {
+                Weekday = dow;
+                WeekdayOffset = wOffset;
+                WeekdayIndex = wIndex;
+                Month = m;
+            }
+            catch
+            {
+                //Restore
+                Weekday = prev.Weekday;
+                WeekdayOffset = prev.WeekdayOffset;
+                WeekdayIndex = prev.WeekdayIndex;
+                Month = prev.Month;
+                throw;
+            }
+        }
+
         public override bool Equals(object o)
         {
             if (o is null)
@@ -101,6 +181,19 @@ namespace HolidayLib
                 ^ Month.GetHashCode()
                 ^ WeekdayIndex.GetHashCode()
                 ^ WeekdayOffset.GetHashCode();
+        }
+
+        public override byte[] Serialize()
+        {
+            using var MS = new MemoryStream();
+            using var BW = new BinaryWriter(MS, Encoding.UTF8);
+            BW.Write(SerializeBaseValues<ConstantWeekdayHoliday>());
+            BW.Write((byte)Weekday);
+            BW.Write(WeekdayOffset);
+            BW.Write(WeekdayIndex);
+            BW.Write((byte)Month);
+            BW.Flush();
+            return MS.ToArray();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 
 namespace HolidayLib
 {
@@ -28,6 +29,12 @@ namespace HolidayLib
             throw new InvalidOperationException($"{nameof(EmptyHoliday)} instances cannot be computed");
         }
 
+        public override void Deserialize(byte[] data)
+        {
+            using var MS = new MemoryStream(data, false);
+            DeserializeBaseValues<EmptyHoliday>(MS);
+        }
+
         public override bool Equals(object o)
         {
             return o != null && o is EmptyHoliday;
@@ -38,5 +45,6 @@ namespace HolidayLib
             return HashcodeOffset ^ GetBaseHashCode();
         }
 
+        public override byte[] Serialize() => SerializeBaseValues<EmptyHoliday>();
     }
 }

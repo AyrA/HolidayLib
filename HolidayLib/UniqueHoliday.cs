@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Text;
 
 namespace HolidayLib
 {
@@ -112,6 +114,42 @@ namespace HolidayLib
             return HashcodeOffset
                 ^ GetBaseHashCode()
                 ^ Date.GetHashCode();
+        }
+
+        public override void Deserialize(byte[] data)
+        {
+            using var MS = new MemoryStream(data, false);
+            DeserializeBaseValues<UniqueHoliday>(MS);
+            using var BR = new BinaryReader(MS);
+
+            //No need to validate the second argument. The constructor does this for us
+            var newDate = new DateTime(BR.ReadInt64(), (DateTimeKind)BR.ReadByte());
+
+            var prev = new
+            {
+                Date
+            };
+            try
+            {
+                Date = newDate;
+            }
+            catch
+            {
+                //Restore
+                Date = prev.Date;
+                throw;
+            }
+        }
+
+        public override byte[] Serialize()
+        {
+            using var MS = new MemoryStream();
+            using var BW = new BinaryWriter(MS, Encoding.UTF8);
+            BW.Write(SerializeBaseValues<UniqueHoliday>());
+            BW.Write(date.Ticks);
+            BW.Write((byte)date.Kind);
+            BW.Flush();
+            return MS.ToArray();
         }
     }
 }
