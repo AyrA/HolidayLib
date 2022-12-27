@@ -272,7 +272,6 @@ This type only exists as a placeholder for when OffsetHoliday is instantiated
 to ensure that the `BaseHoliday` property always has a value assigned.
 
 This type has no properties, and always throws when attempting to calculate.
-This type cannot be XML serialized either.
 
 ## RPN Calculator
 

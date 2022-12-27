@@ -10,6 +10,7 @@ namespace HolidayLib
     /// <remarks>
     /// This type cannot be XML serialized and is not supposed to be used manually
     /// </remarks>
+    [Serializable]
     public class EmptyHoliday : Holiday
     {
         /// <summary>
