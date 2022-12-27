@@ -36,7 +36,7 @@ User defined holiday types are advised to show the same behavior.
 The base Holiday type has a method to quickly check the supplied year
 with the values from these two properties (see `EnsureValidYear(int)` further below).
 
-**Caution:** Derived types should make sure these properties are properly set
+**Caution:** Derived types should make sure that all properties are properly set
 when hiding them behind custom implementations,
 otherwise serialization may behave in unexpected ways.
 See `UniqueHoliday` for an example where `ActiveFromYear` and `ActiveToYear` are hidden by a custom implementation.
@@ -74,7 +74,7 @@ This can later be deserialized with `Deserialize(byte[])`
 Note: Serialization should be done in a way
 so that deserialization doesn't depends on the exact length of the byte array to match.
 This means data has to be serialized in a way
-that permits excessive data being present after all serialized fields.
+that permits excessive data being present after all fields are serialized.
 
 #### Deserialize(byte[])
 
