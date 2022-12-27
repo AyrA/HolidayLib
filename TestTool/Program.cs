@@ -480,7 +480,7 @@ namespace TestTool
                 days.Add("");
             }
 
-            //Calendar header
+            //Calendar header with month name + year
             Console.WriteLine(@"
 ╔══════════════════════════════════╗
 ║{0}║
@@ -488,48 +488,35 @@ namespace TestTool
 ║ Mo │ Tu │ We │ Th │ Fr │ Sa │ Su ║
 ╠════╪════╪════╪════╪════╪════╪════╣", monthName.PadLeft(calTextWidth / 2 + monthName.Length / 2).PadRight(calTextWidth));
 
-            int i = 0; //We also need this later
-            for (; i < days.Count - 7; i += 7)
+            for (int i = 0; i < days.Count; i += 7)
             {
                 Console.Write("║");
                 for (var j = 0; j < 7; j++)
                 {
-                    //Sunday
-                    if (j == 6)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                    }
+                    //Marked day
                     if (highlight.Contains(j + i + 1))
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
+                    }
+                    //Sunday
+                    else if (j == 6)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
                     }
                     Console.Write(" {0,2} ", days[i + j]);
                     Console.ResetColor();
                     Console.Write("{0}", j == 6 ? "" : "│");
                 }
                 Console.WriteLine("║");
-                Console.WriteLine("╟────┼────┼────┼────┼────┼────┼────╢");
-            }
-
-            //Last calendar row
-            Console.Write("║");
-            for (var j = 0; j < 7; j++)
-            {
-                //Sunday
-                if (j == 6)
+                if (i < days.Count - 7)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("╟────┼────┼────┼────┼────┼────┼────╢");
                 }
-                if (highlight.Contains(j + i + 1))
+                else
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("╙────┴────┴────┴────┴────┴────┴────╜");
                 }
-                Console.Write(" {0,2} ", days[i + j]);
-                Console.ResetColor();
-                Console.Write("{0}", j == 6 ? "" : "│");
             }
-            Console.WriteLine("║");
-            Console.WriteLine("╙────┴────┴────┴────┴────┴────┴────╜");
         }
     }
 }
