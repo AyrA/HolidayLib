@@ -188,8 +188,14 @@ New years eve and x-mas fall into this category for example.
 
 - **DayOfMonth**: Day in a month where this holiday happens
 - **Month**: Month when this holiday happens
+- **LeapYearRule**: How to handle holidays that fall on leap days
 
-Note: They both together must form a valid day and month combination.
+Note: DayOfMonth and Month both together must form a valid day and month combination.
+
+LeapYearRule specifies whether the next or previous day is taken on 29 February outside of leap years.
+The value of this property has no effect on other dates.
+The default is "None", which will make `ConstantDayHoliday.Compute(int)`
+throw an exception if the supplied year is not a leap year.
 
 ## ConstantWeekdayHoliday
 
